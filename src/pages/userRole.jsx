@@ -7,7 +7,6 @@ import Pagination from '../components/Pagination'
 const ITEMS_PER_PAGE = 3 // Number of items per page
 
 const UserRole = ({ userData, onNavigateToAddRole }) => {
-  const [user, setUser] = useState(null)
   const [roles, setRoles] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -17,16 +16,6 @@ const UserRole = ({ userData, onNavigateToAddRole }) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-
-  // Load user info
-  useEffect(() => {
-    const storedUser = localStorage.getItem('userData')
-    if (storedUser) {
-      setUser(JSON.parse(storedUser))
-    } else if (userData) {
-      setUser(userData)
-    }
-  }, [userData])
 
   // Fetch roles
   const fetchRoles = async () => {
@@ -106,21 +95,10 @@ const UserRole = ({ userData, onNavigateToAddRole }) => {
       setCurrentPage(newPage)
     }
   }
-
-  const userName = user?.name || user?.user?.name || user?.username || 'User'
-  const userEmail = user?.email || user?.user?.email || 'User'
   
   const filteredRoles = roles.filter(role =>
     role.roleName?.toLowerCase().includes(searchTerm.toLowerCase())
   )
-
-  if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-        <p className="text-gray-600">Loading user information...</p>
-      </div>
-    )
-  }
 
   if (roleToView) {
     return (
@@ -143,16 +121,6 @@ const UserRole = ({ userData, onNavigateToAddRole }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Header */}
-      <header className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-end items-center">
-          <div className="text-right">
-            <p className="text-sm text-start font-medium text-gray-800">{userName}</p>
-            <p className="text-xs text-gray-600">{userEmail}</p>
-          </div>
-        </div>
-      </header>
-
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Welcome Section */}
         <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
@@ -204,8 +172,8 @@ const UserRole = ({ userData, onNavigateToAddRole }) => {
                       ) : (
                         filteredRoles.map((role, index) => (
                           <tr key={role._id || index} className="border border-gray-200 hover:bg-gray-50">
-                            <td className="border border-gray-200 py-3 px-4 text-gray-800 font-medium w-1/3">{role.roleName}</td>
-                            <td className="border border-gray-200 py-3 px-4 w-1/3">
+                            <td className="border border-gray-200 py-3 px-4 text-gray-800 font-medium">{role.roleName}</td>
+                            <td className="border border-gray-200 py-3 px-4">
                               <div className="flex gap-2">
                                 <button
                                   onClick={() => setRoleToView(role)}
